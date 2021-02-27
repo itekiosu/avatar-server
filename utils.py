@@ -1,3 +1,6 @@
+import data as dataTypes
+import struct
+
 def uleb128Encode(num):
 	arr = bytearray()
 	length = 0
@@ -11,7 +14,7 @@ def uleb128Encode(num):
 		length+=1
 	return arr
 
-def pack(__data, __dataType):
+def pack_data(__data, __dataType):
 	data = bytes()
 	pack = True
 	packType = "<B"
@@ -44,7 +47,7 @@ def pack(__data, __dataType):
 		packType = "<f"
 	elif __dataType == dataTypes.rawReplay:
 		pack = False
-		data += packData(len(__data), dataTypes.uInt32)
+		data += pack_data(len(__data), dataTypes.uInt32)
 		data += __data
 	if pack:
 		data += struct.pack(packType, __data)
@@ -55,7 +58,7 @@ def binary_write(structure = None):
 		structure = []
 	packetData = bytes()
 	for i in structure:
-		packetData += pack(i[0], i[1])
+		packetData += pack_data(i[0], i[1])
 	return packetData
 
 def replay_time(unixTime):
