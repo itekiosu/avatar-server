@@ -28,7 +28,7 @@ async def build_replay(sid, mode):
     f.seek(0)
     rawReplay = f.read()
     map = await db.fetch(f'SELECT * FROM maps WHERE md5 = {score["map_md5"]}')
-    name = f'{score["name"]} | {map["artist"]} - {map["title"]} [{map["version"]}]'
+    name = f'{score["name"]} - {map["artist"]} - {map["title"]} [{map["version"]}]'
     full = binary_write([
         [score["mode"], dataTypes.byte],
         [20150414, dataTypes.uInt32],
