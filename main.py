@@ -27,6 +27,8 @@ async def build_replay(sid, mode):
     f = open(f'{glob.config.replay_path}{moder}/{sid}.osr', 'rb')
     f.seek(0)
     rawReplay = f.read()
+    map = await db.fetch(f'SELECT * FROM maps WHERE md5 = {score["map_md5"]}
+    name = f'{score["name"]} | {map["artist"]} - {map["title"]} [{map["version"]}]'
     full = binary_write([
         [score["mode"], dataTypes.byte],
         [20150414, dataTypes.uInt32],
@@ -49,16 +51,18 @@ async def build_replay(sid, mode):
         [0, dataTypes.uInt32],
         [0, dataTypes.uInt32]
     ])
-    return full
+    return [full, name]
 
 @app.route("/replay/<mode>/<int:id>")
 async def dl_replay(id, mode):
-    replay = await build_replay(id, mode)
+    replay_s = await build_replay(id, mode)
+    replay = replay_s[0]
+    retname = replay_s[1]
     file = Response(replay)
     file.headers["Content-type"] = "application/octet-stream"
     file.headers["Content-length"] = len(replay)
     file.headers["Content-Description"] = "File Transfer"
-    file.headers["Content-Disposition"] = f"attachment; filename={id}.osr"
+    file.headers["Content-Disposition"] = f"attachment; filename={retname}.osr"
     return file
 
 if __name__ == '__main__':
