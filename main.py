@@ -27,7 +27,7 @@ async def build_replay(sid, mode):
     f = open(f'{glob.config.replay_path}{moder}/{sid}.osr', 'rb')
     f.seek(0)
     rawReplay = f.read()
-    map = await db.fetch(f'SELECT * FROM maps WHERE md5 = {score["map_md5"]}')
+    map = await db.fetch(f'SELECT * FROM maps WHERE md5 = "{score["map_md5"]}"')
     name = f'{score["name"]} - {map["artist"]} - {map["title"]} [{map["version"]}]'
     full = binary_write([
         [score["mode"], dataTypes.byte],
